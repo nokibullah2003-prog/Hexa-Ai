@@ -208,8 +208,7 @@
   
   <section class="glass panel hidden" id="tab-others">
     <div class="subtools">
-      <button class="sub active" data-sub="edit"><div class="i">🖼️</div>Image → Image</button>
-      <button class="sub" data-sub="gif"><div class="i">🎞️</div>Animation</button>
+      <button class="sub active" data-sub="gif"><div class="i">🎞️</div>Animation</button>
       <button class="sub" data-sub="meme"><div class="i">😂</div>Make Meme</button>
       <button class="sub" data-sub="caption"><div class="i">💬</div>Make Caption</button>
       <button class="sub" data-sub="poem"><div class="i">📜</div>Poem</button>
@@ -218,66 +217,6 @@
       <button class="sub" data-sub="emoji"><div class="i">😀</div>Emoji</button>
     </div>
     
-    <!-- ===== Dedicated Image-to-Image UI ===== -->
-    <div id="i2iPanel" class="space-y-6">
-      <div class="i2i-head">
-        <h2>Image-to-Image Editor</h2>
-        <p>Upload an image, describe your edits, get a transformed result.</p>
-      </div>
-      <div class="i2i-grid">
-        <div>
-          <label>Source Image</label>
-          <div class="i2i-tile" id="i2iSourceTile">
-            <div class="i2i-empty" id="i2iSourceEmpty">
-              <div class="ico">⬆️</div>
-              <div class="pri">Click to upload</div>
-              <div class="sec">PNG, JPG, WEBP</div>
-            </div>
-            <img id="i2iSourceImg" alt="Uploaded" style="display:none"/>
-            <button type="button" class="i2i-clear" id="i2iClearSrc" style="display:none" title="Remove image">✕</button>
-          </div>
-          <input type="file" id="i2iFile" accept="image/*" style="display:none"/>
-        </div>
-        <div>
-          <label>Result</label>
-          <div class="i2i-tile result" id="i2iResultTile">
-            <div class="i2i-empty" id="i2iResultEmpty">
-              <div class="ico">🪄</div>
-              <div class="sec">Result appears here</div>
-            </div>
-            <div class="i2i-empty" id="i2iResultLoading" style="display:none">
-              <div class="i2i-spin"></div>
-              <div class="sec" id="i2iStep">Working…</div>
-            </div>
-            <img id="i2iResultImg" alt="Result" style="display:none"/>
-          </div>
-        </div>
-      </div>
-      <div class="i2i-controls">
-        <label>Edit Instructions</label>
-        <textarea id="i2iPrompt" placeholder="e.g. 'turn into cyberpunk style'…"></textarea>
-        <div class="i2i-actions">
-          <button class="btn" id="i2iGenBtn">✨ Generate Edit</button>
-          <button class="btn alt" id="i2iDlBtn" style="display:none">⬇ Download PNG</button>
-          <button class="btn alt" id="i2iExportBtn" style="display:none">⤓ Export HTML</button>
-        </div>
-        <div class="err" id="i2iErr" style="display:none"></div>
-      </div>
-      <div class="i2i-quick">
-        <p class="q-label">Quick edits</p>
-        <div class="q-row" id="i2iQuick">
-          <button class="q-chip" data-q="Enhance quality, sharpen details, fix lighting">Enhance quality</button>
-          <button class="q-chip" data-q="Oil painting style, thick brush strokes, painterly canvas">Oil painting style</button>
-          <button class="q-chip" data-q="Cyberpunk neon, glowing magenta and cyan lights, futuristic night city">Cyberpunk neon</button>
-          <button class="q-chip" data-q="Anime style, vibrant cel-shaded illustration, studio ghibli inspired">Anime style</button>
-          <button class="q-chip" data-q="Cinematic lighting, dramatic shadows, 35mm film grain, color graded">Cinematic lighting</button>
-          <button class="q-chip" data-q="Watercolor painting, soft pigments, paper texture, gentle washes">Watercolor</button>
-          <button class="q-chip" data-q="Winter snow scene, falling snowflakes, frosted breath, cold blue tones">Winter snow scene</button>
-          <button class="q-chip" data-q="Vintage film look, faded colors, light leaks, grainy 70s photograph">Vintage film look</button>
-        </div>
-      </div>
-    </div>
-
     <div id="othersUpload" style="margin:10px 0 14px">
       <label>Upload an image</label>
       <input type="file" id="othersFile" accept="image/*" style="display:block;color:#eee;margin-top:6px"/>
@@ -410,6 +349,34 @@
       currentStyle=c.dataset.style;
     };
   });
+
+  // ===== Hexa Ai watermark on download =====
+  async function watermarkAndDownload(srcUrl, filename){
+    try{
+      const img = await loadImg(srcUrl);
+      const c = document.createElement('canvas');
+      c.width = img.naturalWidth; c.height = img.naturalHeight;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      const fs = Math.max(14, Math.round(c.width / 42));
+      ctx.font = '600 ' + fs + 'px "Space Grotesk", system-ui, sans-serif';
+      ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+      const pad = Math.round(fs * 0.9);
+      ctx.shadowColor = 'rgba(0,0,0,0.65)';
+      ctx.shadowBlur = fs * 0.5;
+      ctx.fillStyle = 'rgba(255,255,255,0.92)';
+      ctx.fillText('Hexa Ai', pad, c.height - pad);
+      ctx.shadowBlur = 0;
+      const data = c.toDataURL('image/png');
+      const a = document.createElement('a'); a.href = data; a.download = filename;
+      document.body.appendChild(a); a.click(); a.remove();
+    }catch(e){
+      // CORS fallback: open original in new tab
+      window.open(srcUrl, '_blank');
+    }
+  }
+  window.watermarkAndDownload = watermarkAndDownload;
+
   const imgBtn=document.getElementById('imgBtn');
   imgBtn.onclick=()=>{
     const p=document.getElementById('imgPrompt').value.trim();
@@ -420,7 +387,7 @@
     const styleMod=STYLE_MODIFIERS[currentStyle]||STYLE_MODIFIERS.normal;
     const url=`https://image.pollinations.ai/prompt/${encodeURIComponent(p+', '+styleMod)}?width=1024&height=1024&seed=${seed}&model=flux&nologo=true&enhance=true`;
     const im=new Image();
-    im.onload=()=>{loading(imgBtn,false);out.innerHTML=`<img src="${url}" alt="generated"/><br/><a href="${url}" target="_blank" rel="noopener" download="hexa-ai-image.png" style="display:inline-block;margin-top:14px"><button class="btn alt">⬇ Download Image</button></a>`};
+    im.onload=()=>{loading(imgBtn,false);out.innerHTML=`<img src="${url}" alt="generated"/><br/><button class="btn alt" style="margin-top:14px" onclick="watermarkAndDownload('${url}','hexa-ai-image.png')">⬇ Download Image</button>`};
     im.onerror=()=>{loading(imgBtn,false);out.innerHTML='<p class="err">Failed to generate. Try again.</p>'};
     im.src=url;
   };
@@ -473,9 +440,8 @@
   };
 
   // ===== OTHERS =====
-  let currentSub='edit', uploadDataUrl=null;
+  let currentSub='gif', uploadDataUrl=null;
   const placeholders={
-    edit:"How should I transform your image? (e.g. 'turn into cyberpunk neon at night')",
     gif:"A cat dancing under disco lights, vibrant cartoon…",
     meme:"Topic for the meme (e.g. 'Monday morning programmers')",
     caption:"Describe the photo or topic (e.g. 'sunset on the beach with friends')",
@@ -484,8 +450,8 @@
     sticker:"A cute astronaut cat holding a star…",
     emoji:"A grinning sun with sunglasses…"
   };
-  const labels={edit:"Editing instruction",caption:"Photo or topic to caption",meme:"Meme topic"};
-  const showsUpload={edit:true,caption:false,meme:false,gif:false,poem:false,code:false,sticker:false,emoji:false};
+  const labels={caption:"Photo or topic to caption",meme:"Meme topic"};
+  const showsUpload={caption:false,meme:false,gif:false,poem:false,code:false,sticker:false,emoji:false};
 
   document.querySelectorAll('.sub').forEach(b=>{
     b.onclick=()=>{
@@ -592,6 +558,15 @@
     };
     draw(top,20,false);
     draw(bottom,0,true);
+    // Hexa Ai watermark (bottom-left, small)
+    const wfs = Math.max(14, Math.round(c.width / 42));
+    ctx.font = '600 ' + wfs + 'px "Space Grotesk", system-ui, sans-serif';
+    ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+    ctx.lineWidth = Math.max(2, wfs/8); ctx.strokeStyle = 'rgba(0,0,0,0.75)';
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+    const wpad = Math.round(wfs * 0.9);
+    ctx.strokeText('Hexa Ai', wpad, c.height - wpad);
+    ctx.fillText('Hexa Ai', wpad, c.height - wpad);
     return c.toDataURL('image/png');
   }
 
@@ -599,41 +574,10 @@
   oBtn.onclick=async()=>{
     const p=document.getElementById('othersPrompt').value.trim();
     const out=document.getElementById('othersResult');
-    if(showsUpload[currentSub] && !uploadDataUrl && currentSub==='edit') return alert('Upload an image first.');
-    if(!p && currentSub!=='edit') return alert('Enter a prompt first.');
+    if(!p) return alert('Enter a prompt first.');
     loading(oBtn,true,'Working…'); out.innerHTML='';
     try{
-      if(currentSub==='edit'){
-        // TRUE image-to-image: keep the same subject/composition, change look per prompt.
-        // 1) Host the upload so the kontext model can fetch it.
-        // 2) Use Pollinations 'kontext' (img2img) seeded with a vision-written transformation prompt.
-        out.innerHTML='<p style="color:var(--muted)">Uploading your image…</p>';
-        let hostedUrl=null;
-        try{ hostedUrl = await uploadToHost(uploadDataUrl); }catch(e){ console.warn('host failed',e); }
-
-        out.innerHTML='<p style="color:var(--muted)">Reading your image…</p>';
-        const sys="You are guiding an image-to-image model. The user uploads a reference image and the generated image MUST look like the SAME person/character/object as the upload — same face, same identity, same hairstyle, same body type, same clothing details, same pose, same framing, same camera angle, same background composition. Treat the upload as a strict identity reference. Only the user's requested transformation (style, lighting, mood, colors, era, materials) may change. Output ONE single vivid prompt paragraph that: (a) describes the exact subject (face shape, hair, eyes, skin tone, outfit, accessories), pose and composition with high fidelity so the model can reproduce the same character, (b) applies the user's transformation as a stylistic overlay only. Do NOT invent new people, do NOT change age/gender/ethnicity, do NOT reframe the shot. No preface, no quotes, no markdown.";
-        const userInstruction = p || 'enhance, stylize, improve quality, keep identity';
-        const desc = await askAi('User transformation request: '+userInstruction, sys, uploadDataUrl);
-
-        out.innerHTML='<p style="color:var(--muted)">Generating edited image (keeping the same look)…</p>';
-        let finalUrl;
-        if(hostedUrl){
-          finalUrl = kontextImg(desc + ' IMPORTANT: keep the exact same person/character, same face, same identity, same pose, same outfit, same composition and framing as the input reference image. Only apply the requested style change.', hostedUrl);
-        } else {
-          // Fallback when hosting fails — still works, less identity-faithful.
-          finalUrl = pollImg(desc, '');
-        }
-        try{ await loadImg(finalUrl); }
-        catch{
-          // Final fallback to flux text-to-image
-          finalUrl = pollImg(desc, '');
-          await loadImg(finalUrl);
-        }
-        out.innerHTML=`<img src="${finalUrl}"/><br/><a href="${finalUrl}" target="_blank" download="hexa-edit.png" style="display:inline-block;margin-top:14px"><button class="btn alt">⬇ Download</button></a>`;
-        loading(oBtn,false);
-      }
-      else if(currentSub==='gif'){
+      if(currentSub==='gif'){
         // Real animation: 4 frames with varying seeds, cycle them in CSS
         out.innerHTML='<p style="color:var(--muted)">Generating 4 animation frames…</p>';
         const frames=[];
@@ -673,7 +617,7 @@
         const variant = document.getElementById('emojiStyle').value;
         const url=pollImg(p,currentSub,null,variant);
         await loadImg(url);
-        out.innerHTML=`<img src="${url}"/><br/><a href="${url}" target="_blank" download="hexa-${currentSub}.png" style="display:inline-block;margin-top:14px"><button class="btn alt">⬇ Download</button></a>`;
+        out.innerHTML=`<img src="${url}"/><br/><button class="btn alt" style="margin-top:14px" onclick="watermarkAndDownload('${url}','hexa-${currentSub}.png')">⬇ Download</button>`;
         loading(oBtn,false);
       }
       else if(currentSub==='poem'){
@@ -692,147 +636,6 @@
         loading(oBtn,false);
       }
     }catch(e){out.innerHTML=`<p class="err">Error: ${e.message}</p>`;loading(oBtn,false)}
-  };
-
-  /* ===== Image-to-Image (dedicated) ===== */
-  const i2iEls={
-    panel:document.getElementById('i2iPanel'),
-    legacyUp:document.getElementById('othersUpload'),
-    legacyLabel:document.getElementById('othersPromptLabel'),
-    legacyPrompt:document.getElementById('othersPrompt'),
-    legacyBtn:document.getElementById('othersBtn'),
-    legacyOut:document.getElementById('othersResult'),
-    tile:document.getElementById('i2iSourceTile'),
-    file:document.getElementById('i2iFile'),
-    srcImg:document.getElementById('i2iSourceImg'),
-    srcEmpty:document.getElementById('i2iSourceEmpty'),
-    clearBtn:document.getElementById('i2iClearSrc'),
-    resTile:document.getElementById('i2iResultTile'),
-    resImg:document.getElementById('i2iResultImg'),
-    resEmpty:document.getElementById('i2iResultEmpty'),
-    resLoad:document.getElementById('i2iResultLoading'),
-    step:document.getElementById('i2iStep'),
-    prompt:document.getElementById('i2iPrompt'),
-    gen:document.getElementById('i2iGenBtn'),
-    dl:document.getElementById('i2iDlBtn'),
-    exp:document.getElementById('i2iExportBtn'),
-    err:document.getElementById('i2iErr'),
-  };
-  let i2iDataUrl=null, i2iResultUrl=null;
-  function i2iToggle(showEdit){
-    i2iEls.panel.style.display = showEdit ? 'block' : 'none';
-    const legacyDisp = showEdit ? 'none' : '';
-    i2iEls.legacyUp.style.display = showEdit ? 'none' :
-      (showsUpload[currentSub] ? 'block' : 'none');
-    i2iEls.legacyLabel.style.display = legacyDisp;
-    i2iEls.legacyPrompt.style.display = legacyDisp;
-    i2iEls.legacyBtn.style.display = legacyDisp;
-    i2iEls.legacyOut.style.display = legacyDisp;
-  }
-  i2iToggle(true); // default sub is 'edit'
-  // Hook sub buttons
-  document.querySelectorAll('.sub').forEach(b=>{
-    const prev=b.onclick;
-    b.addEventListener('click',()=>{ i2iToggle(b.dataset.sub==='edit'); });
-  });
-  // Upload interactions
-  i2iEls.tile.addEventListener('click',e=>{
-    if(e.target===i2iEls.clearBtn) return;
-    if(!i2iDataUrl) i2iEls.file.click();
-  });
-  i2iEls.file.addEventListener('change',e=>{
-    const f=e.target.files[0]; if(!f) return;
-    const r=new FileReader();
-    r.onload=()=>{
-      i2iDataUrl=r.result;
-      i2iEls.srcImg.src=r.result;
-      i2iEls.srcImg.style.display='block';
-      i2iEls.srcEmpty.style.display='none';
-      i2iEls.clearBtn.style.display='flex';
-    };
-    r.readAsDataURL(f);
-  });
-  i2iEls.clearBtn.addEventListener('click',e=>{
-    e.stopPropagation();
-    i2iDataUrl=null;
-    i2iEls.file.value='';
-    i2iEls.srcImg.style.display='none';
-    i2iEls.srcImg.removeAttribute('src');
-    i2iEls.srcEmpty.style.display='block';
-    i2iEls.clearBtn.style.display='none';
-  });
-  // Quick edits
-  document.querySelectorAll('#i2iQuick .q-chip').forEach(c=>{
-    c.onclick=()=>{ i2iEls.prompt.value=c.dataset.q; i2iEls.prompt.focus(); };
-  });
-  function i2iShowResult(url){
-    i2iResultUrl=url;
-    i2iEls.resEmpty.style.display='none';
-    i2iEls.resLoad.style.display='none';
-    i2iEls.resImg.src=url;
-    i2iEls.resImg.style.display='block';
-    i2iEls.dl.style.display='inline-flex';
-    i2iEls.exp.style.display='inline-flex';
-  }
-  function i2iSetStep(t){
-    i2iEls.resEmpty.style.display='none';
-    i2iEls.resImg.style.display='none';
-    i2iEls.resLoad.style.display='block';
-    i2iEls.step.textContent=t;
-  }
-  function i2iErr(msg){
-    i2iEls.err.style.display='block';
-    i2iEls.err.textContent='Error: '+msg;
-    i2iEls.resLoad.style.display='none';
-    if(!i2iResultUrl) i2iEls.resEmpty.style.display='block';
-  }
-  i2iEls.gen.onclick=async()=>{
-    i2iEls.err.style.display='none';
-    if(!i2iDataUrl) return alert('Upload a source image first.');
-    const p=i2iEls.prompt.value.trim();
-    loading(i2iEls.gen,true,'Generating…');
-    try{
-      i2iSetStep('Uploading your image…');
-      let hostedUrl=null;
-      try{ hostedUrl=await uploadToHost(i2iDataUrl); }catch(e){ console.warn('host failed',e); }
-      i2iSetStep('Reading your image…');
-      const sys="You are guiding an image-to-image model. The user uploads a reference image and the generated image MUST look like the SAME person/character/object as the upload — same face, same identity, same hairstyle, same body type, same clothing details, same pose, same framing, same camera angle, same background composition. Treat the upload as a strict identity reference. Only the user's requested transformation (style, lighting, mood, colors, era, materials) may change. Output ONE single vivid prompt paragraph. No preface, no quotes, no markdown.";
-      const userInstruction = p || 'enhance, stylize, improve quality, keep identity';
-      const desc=await askAi('User transformation request: '+userInstruction, sys, i2iDataUrl);
-      i2iSetStep('Generating edited image…');
-      let finalUrl;
-      if(hostedUrl){
-        finalUrl=kontextImg(desc+' IMPORTANT: keep the exact same person/character, same face, same identity, same pose, same outfit, same composition and framing as the input reference image. Only apply the requested style change.', hostedUrl);
-      } else {
-        finalUrl=pollImg(desc,'');
-      }
-      try{ await loadImg(finalUrl); }
-      catch{ finalUrl=pollImg(desc,''); await loadImg(finalUrl); }
-      i2iShowResult(finalUrl);
-    }catch(e){ i2iErr(e.message); }
-    loading(i2iEls.gen,false);
-  };
-  i2iEls.dl.onclick=async()=>{
-    if(!i2iResultUrl) return;
-    try{
-      const r=await fetch(i2iResultUrl); const b=await r.blob();
-      const u=URL.createObjectURL(b);
-      const a=document.createElement('a'); a.href=u; a.download='hexa-edit.png';
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(()=>URL.revokeObjectURL(u),2000);
-    }catch{ window.open(i2iResultUrl,'_blank'); }
-  };
-  i2iEls.exp.onclick=()=>{
-    if(!i2iResultUrl) return;
-    const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Hexa AI — Edited Image</title>
-<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0e0a08;font-family:system-ui,sans-serif}
-img{max-width:96vw;max-height:96vh;border-radius:16px;box-shadow:0 30px 80px -20px rgba(255,154,77,.45)}</style>
-</head><body><img src="${i2iResultUrl}" alt="Hexa AI edit"/></body></html>`;
-    const blob=new Blob([html],{type:'text/html'});
-    const u=URL.createObjectURL(blob);
-    const a=document.createElement('a'); a.href=u; a.download='hexa-edit.html';
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(()=>URL.revokeObjectURL(u),2000);
   };
 
 </script>
