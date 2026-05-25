@@ -120,6 +120,40 @@
   .chip{padding:8px 14px;border-radius:999px;border:1px solid var(--border);background:rgba(60,42,30,.5);color:#f0e6dc;font-family:inherit;font-weight:600;font-size:.85rem;cursor:pointer;transition:.15s}
   .chip:hover{background:rgba(80,55,40,.75)}
   .chip.active{background:linear-gradient(135deg,var(--copper),var(--copper-glow));color:#1a1410;border-color:transparent;box-shadow:0 8px 22px -10px rgba(255,154,77,.6)}
+
+  /* ===== Image-to-Image dedicated UI ===== */
+  .i2i-head{text-align:center;margin:8px 0 18px}
+  .i2i-head h2{font-family:'Unbounded','Space Grotesk',sans-serif;font-size:1.5rem;letter-spacing:-.02em;color:#f5ebdc;margin-bottom:6px}
+  .i2i-head p{color:var(--muted);font-size:.92rem}
+  .i2i-grid{display:grid;grid-template-columns:1fr;gap:18px}
+  @media(min-width:720px){.i2i-grid{grid-template-columns:1fr 1fr}}
+  .i2i-tile{position:relative;aspect-ratio:1/1;border-radius:18px;border:1px dashed var(--border);
+    background:rgba(20,14,10,.55);display:flex;align-items:center;justify-content:center;
+    overflow:hidden;cursor:pointer;transition:.18s}
+  .i2i-tile.result{cursor:default;border-style:solid}
+  .i2i-tile:hover{border-color:var(--copper-glow);background:rgba(30,20,14,.7)}
+  .i2i-tile img{width:100%;height:100%;object-fit:cover}
+  .i2i-empty{text-align:center;padding:24px;color:var(--muted)}
+  .i2i-empty .ico{font-size:2.4rem;margin-bottom:8px;filter:drop-shadow(0 4px 12px rgba(255,154,77,.4))}
+  .i2i-empty .pri{color:#f5ebdc;font-weight:600;margin-bottom:4px}
+  .i2i-empty .sec{font-size:.8rem}
+  .i2i-clear{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;
+    border:0;background:rgba(0,0,0,.55);color:#fff;font-size:1rem;cursor:pointer;backdrop-filter:blur(6px);
+    display:flex;align-items:center;justify-content:center;z-index:2}
+  .i2i-clear:hover{background:rgba(0,0,0,.8)}
+  .i2i-controls{margin-top:18px;padding:18px;border-radius:18px;background:rgba(20,14,10,.5);
+    border:1px solid var(--border)}
+  .i2i-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .i2i-quick{margin-top:18px}
+  .i2i-quick .q-label{color:var(--muted);font-size:.85rem;margin-bottom:8px}
+  .i2i-quick .q-row{display:flex;flex-wrap:wrap;gap:8px}
+  .q-chip{padding:8px 14px;border-radius:999px;border:1px solid var(--border);
+    background:rgba(60,42,30,.5);color:#f0e6dc;font-family:inherit;font-weight:600;
+    font-size:.82rem;cursor:pointer;transition:.15s}
+  .q-chip:hover{background:linear-gradient(135deg,var(--copper),var(--copper-glow));color:#1a1410;border-color:transparent}
+  .i2i-spin{width:28px;height:28px;border-radius:50%;border:3px solid rgba(255,154,77,.25);
+    border-top-color:var(--copper-glow);animation:spin .8s linear infinite;margin:0 auto 10px}
+
 </style>
 </head>
 <body>
@@ -183,6 +217,67 @@
       <button class="sub" data-sub="sticker"><div class="i">🏷️</div>Sticker</button>
       <button class="sub" data-sub="emoji"><div class="i">😀</div>Emoji</button>
     </div>
+    
+    <!-- ===== Dedicated Image-to-Image UI ===== -->
+    <div id="i2iPanel" class="space-y-6">
+      <div class="i2i-head">
+        <h2>Image-to-Image Editor</h2>
+        <p>Upload an image, describe your edits, get a transformed result.</p>
+      </div>
+      <div class="i2i-grid">
+        <div>
+          <label>Source Image</label>
+          <div class="i2i-tile" id="i2iSourceTile">
+            <div class="i2i-empty" id="i2iSourceEmpty">
+              <div class="ico">⬆️</div>
+              <div class="pri">Click to upload</div>
+              <div class="sec">PNG, JPG, WEBP</div>
+            </div>
+            <img id="i2iSourceImg" alt="Uploaded" style="display:none"/>
+            <button type="button" class="i2i-clear" id="i2iClearSrc" style="display:none" title="Remove image">✕</button>
+          </div>
+          <input type="file" id="i2iFile" accept="image/*" style="display:none"/>
+        </div>
+        <div>
+          <label>Result</label>
+          <div class="i2i-tile result" id="i2iResultTile">
+            <div class="i2i-empty" id="i2iResultEmpty">
+              <div class="ico">🪄</div>
+              <div class="sec">Result appears here</div>
+            </div>
+            <div class="i2i-empty" id="i2iResultLoading" style="display:none">
+              <div class="i2i-spin"></div>
+              <div class="sec" id="i2iStep">Working…</div>
+            </div>
+            <img id="i2iResultImg" alt="Result" style="display:none"/>
+          </div>
+        </div>
+      </div>
+      <div class="i2i-controls">
+        <label>Edit Instructions</label>
+        <textarea id="i2iPrompt" placeholder="e.g. 'turn into cyberpunk style'…"></textarea>
+        <div class="i2i-actions">
+          <button class="btn" id="i2iGenBtn">✨ Generate Edit</button>
+          <button class="btn alt" id="i2iDlBtn" style="display:none">⬇ Download PNG</button>
+          <button class="btn alt" id="i2iExportBtn" style="display:none">⤓ Export HTML</button>
+        </div>
+        <div class="err" id="i2iErr" style="display:none"></div>
+      </div>
+      <div class="i2i-quick">
+        <p class="q-label">Quick edits</p>
+        <div class="q-row" id="i2iQuick">
+          <button class="q-chip" data-q="Enhance quality, sharpen details, fix lighting">Enhance quality</button>
+          <button class="q-chip" data-q="Oil painting style, thick brush strokes, painterly canvas">Oil painting style</button>
+          <button class="q-chip" data-q="Cyberpunk neon, glowing magenta and cyan lights, futuristic night city">Cyberpunk neon</button>
+          <button class="q-chip" data-q="Anime style, vibrant cel-shaded illustration, studio ghibli inspired">Anime style</button>
+          <button class="q-chip" data-q="Cinematic lighting, dramatic shadows, 35mm film grain, color graded">Cinematic lighting</button>
+          <button class="q-chip" data-q="Watercolor painting, soft pigments, paper texture, gentle washes">Watercolor</button>
+          <button class="q-chip" data-q="Winter snow scene, falling snowflakes, frosted breath, cold blue tones">Winter snow scene</button>
+          <button class="q-chip" data-q="Vintage film look, faded colors, light leaks, grainy 70s photograph">Vintage film look</button>
+        </div>
+      </div>
+    </div>
+
     <div id="othersUpload" style="margin:10px 0 14px">
       <label>Upload an image</label>
       <input type="file" id="othersFile" accept="image/*" style="display:block;color:#eee;margin-top:6px"/>
@@ -598,6 +693,148 @@
       }
     }catch(e){out.innerHTML=`<p class="err">Error: ${e.message}</p>`;loading(oBtn,false)}
   };
+
+  /* ===== Image-to-Image (dedicated) ===== */
+  const i2iEls={
+    panel:document.getElementById('i2iPanel'),
+    legacyUp:document.getElementById('othersUpload'),
+    legacyLabel:document.getElementById('othersPromptLabel'),
+    legacyPrompt:document.getElementById('othersPrompt'),
+    legacyBtn:document.getElementById('othersBtn'),
+    legacyOut:document.getElementById('othersResult'),
+    tile:document.getElementById('i2iSourceTile'),
+    file:document.getElementById('i2iFile'),
+    srcImg:document.getElementById('i2iSourceImg'),
+    srcEmpty:document.getElementById('i2iSourceEmpty'),
+    clearBtn:document.getElementById('i2iClearSrc'),
+    resTile:document.getElementById('i2iResultTile'),
+    resImg:document.getElementById('i2iResultImg'),
+    resEmpty:document.getElementById('i2iResultEmpty'),
+    resLoad:document.getElementById('i2iResultLoading'),
+    step:document.getElementById('i2iStep'),
+    prompt:document.getElementById('i2iPrompt'),
+    gen:document.getElementById('i2iGenBtn'),
+    dl:document.getElementById('i2iDlBtn'),
+    exp:document.getElementById('i2iExportBtn'),
+    err:document.getElementById('i2iErr'),
+  };
+  let i2iDataUrl=null, i2iResultUrl=null;
+  function i2iToggle(showEdit){
+    i2iEls.panel.style.display = showEdit ? 'block' : 'none';
+    const legacyDisp = showEdit ? 'none' : '';
+    i2iEls.legacyUp.style.display = showEdit ? 'none' :
+      (showsUpload[currentSub] ? 'block' : 'none');
+    i2iEls.legacyLabel.style.display = legacyDisp;
+    i2iEls.legacyPrompt.style.display = legacyDisp;
+    i2iEls.legacyBtn.style.display = legacyDisp;
+    i2iEls.legacyOut.style.display = legacyDisp;
+  }
+  i2iToggle(true); // default sub is 'edit'
+  // Hook sub buttons
+  document.querySelectorAll('.sub').forEach(b=>{
+    const prev=b.onclick;
+    b.addEventListener('click',()=>{ i2iToggle(b.dataset.sub==='edit'); });
+  });
+  // Upload interactions
+  i2iEls.tile.addEventListener('click',e=>{
+    if(e.target===i2iEls.clearBtn) return;
+    if(!i2iDataUrl) i2iEls.file.click();
+  });
+  i2iEls.file.addEventListener('change',e=>{
+    const f=e.target.files[0]; if(!f) return;
+    const r=new FileReader();
+    r.onload=()=>{
+      i2iDataUrl=r.result;
+      i2iEls.srcImg.src=r.result;
+      i2iEls.srcImg.style.display='block';
+      i2iEls.srcEmpty.style.display='none';
+      i2iEls.clearBtn.style.display='flex';
+    };
+    r.readAsDataURL(f);
+  });
+  i2iEls.clearBtn.addEventListener('click',e=>{
+    e.stopPropagation();
+    i2iDataUrl=null;
+    i2iEls.file.value='';
+    i2iEls.srcImg.style.display='none';
+    i2iEls.srcImg.removeAttribute('src');
+    i2iEls.srcEmpty.style.display='block';
+    i2iEls.clearBtn.style.display='none';
+  });
+  // Quick edits
+  document.querySelectorAll('#i2iQuick .q-chip').forEach(c=>{
+    c.onclick=()=>{ i2iEls.prompt.value=c.dataset.q; i2iEls.prompt.focus(); };
+  });
+  function i2iShowResult(url){
+    i2iResultUrl=url;
+    i2iEls.resEmpty.style.display='none';
+    i2iEls.resLoad.style.display='none';
+    i2iEls.resImg.src=url;
+    i2iEls.resImg.style.display='block';
+    i2iEls.dl.style.display='inline-flex';
+    i2iEls.exp.style.display='inline-flex';
+  }
+  function i2iSetStep(t){
+    i2iEls.resEmpty.style.display='none';
+    i2iEls.resImg.style.display='none';
+    i2iEls.resLoad.style.display='block';
+    i2iEls.step.textContent=t;
+  }
+  function i2iErr(msg){
+    i2iEls.err.style.display='block';
+    i2iEls.err.textContent='Error: '+msg;
+    i2iEls.resLoad.style.display='none';
+    if(!i2iResultUrl) i2iEls.resEmpty.style.display='block';
+  }
+  i2iEls.gen.onclick=async()=>{
+    i2iEls.err.style.display='none';
+    if(!i2iDataUrl) return alert('Upload a source image first.');
+    const p=i2iEls.prompt.value.trim();
+    loading(i2iEls.gen,true,'Generating…');
+    try{
+      i2iSetStep('Uploading your image…');
+      let hostedUrl=null;
+      try{ hostedUrl=await uploadToHost(i2iDataUrl); }catch(e){ console.warn('host failed',e); }
+      i2iSetStep('Reading your image…');
+      const sys="You are guiding an image-to-image model. The user uploads a reference image and the generated image MUST look like the SAME person/character/object as the upload — same face, same identity, same hairstyle, same body type, same clothing details, same pose, same framing, same camera angle, same background composition. Treat the upload as a strict identity reference. Only the user's requested transformation (style, lighting, mood, colors, era, materials) may change. Output ONE single vivid prompt paragraph. No preface, no quotes, no markdown.";
+      const userInstruction = p || 'enhance, stylize, improve quality, keep identity';
+      const desc=await askAi('User transformation request: '+userInstruction, sys, i2iDataUrl);
+      i2iSetStep('Generating edited image…');
+      let finalUrl;
+      if(hostedUrl){
+        finalUrl=kontextImg(desc+' IMPORTANT: keep the exact same person/character, same face, same identity, same pose, same outfit, same composition and framing as the input reference image. Only apply the requested style change.', hostedUrl);
+      } else {
+        finalUrl=pollImg(desc,'');
+      }
+      try{ await loadImg(finalUrl); }
+      catch{ finalUrl=pollImg(desc,''); await loadImg(finalUrl); }
+      i2iShowResult(finalUrl);
+    }catch(e){ i2iErr(e.message); }
+    loading(i2iEls.gen,false);
+  };
+  i2iEls.dl.onclick=async()=>{
+    if(!i2iResultUrl) return;
+    try{
+      const r=await fetch(i2iResultUrl); const b=await r.blob();
+      const u=URL.createObjectURL(b);
+      const a=document.createElement('a'); a.href=u; a.download='hexa-edit.png';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(u),2000);
+    }catch{ window.open(i2iResultUrl,'_blank'); }
+  };
+  i2iEls.exp.onclick=()=>{
+    if(!i2iResultUrl) return;
+    const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Hexa AI — Edited Image</title>
+<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0e0a08;font-family:system-ui,sans-serif}
+img{max-width:96vw;max-height:96vh;border-radius:16px;box-shadow:0 30px 80px -20px rgba(255,154,77,.45)}</style>
+</head><body><img src="${i2iResultUrl}" alt="Hexa AI edit"/></body></html>`;
+    const blob=new Blob([html],{type:'text/html'});
+    const u=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=u; a.download='hexa-edit.html';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(u),2000);
+  };
+
 </script>
 </body>
 </html>
