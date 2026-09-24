@@ -59,11 +59,14 @@
   .tab.active{background:linear-gradient(135deg,var(--copper),var(--copper-glow));color:#1a1410;
     box-shadow:0 10px 30px -10px rgba(255,154,77,.6)}
 
-  .panel{margin-top:18px;padding:22px}
+  .panel{margin-top:18px;padding:26px}
   .hidden{display:none}
   label{display:block;font-weight:600;margin-bottom:8px;color:#f5ebdce0;font-size:.95rem}
-  textarea,input{width:100%;padding:14px;border-radius:14px;border:1px solid var(--border);
-    background:rgba(20,14,10,.6);color:var(--text);font:inherit;resize:vertical;min-height:100px}
+  textarea,input{width:100%;padding:18px 18px;border-radius:18px;border:1px solid var(--border);
+    background:rgba(20,14,10,.6);color:var(--text);font:inherit;font-size:1.02rem;line-height:1.6;
+    resize:vertical;min-height:170px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+  input{min-height:0}
+  textarea::placeholder,input::placeholder{color:#a08d7b}
   textarea:focus,input:focus{outline:none;border-color:var(--copper-glow);box-shadow:0 0 0 3px rgba(255,154,77,.18)}
 
   .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border:0;border-radius:14px;
@@ -81,15 +84,16 @@
     box-shadow:0 20px 60px -20px rgba(255,154,77,.35)}
   .preview{height:520px;background:#fff}
 
-  .chat{max-height:440px;overflow-y:auto;padding:16px;border-radius:18px;
+  .chat{height:60vh;min-height:420px;max-height:720px;overflow-y:auto;padding:20px;border-radius:20px;
     background:rgba(20,14,10,.5);border:1px solid var(--border)}
-  .msg{max-width:85%;padding:12px 16px;border-radius:18px;margin-bottom:10px;line-height:1.55;
-    white-space:pre-wrap;font-size:.95rem}
+  .msg{max-width:88%;padding:14px 18px;border-radius:18px;margin-bottom:12px;line-height:1.65;
+    white-space:pre-wrap;font-size:1rem}
   .msg.user{margin-left:auto;background:linear-gradient(135deg,var(--copper),var(--copper-glow));color:#1a1410;font-weight:500}
   .msg.bot{background:rgba(60,42,30,.7);border:1px solid var(--border)}
   .msg.loading{font-style:italic;color:var(--muted)}
-  .row{display:flex;gap:10px;margin-top:14px;align-items:stretch}
-  .row textarea{min-height:60px;flex:1}
+  .row{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+  .row textarea{min-height:150px;width:100%}
+  .row .btn{align-self:flex-end;padding:15px 34px}
   .err{color:#ff8a8a;margin-top:10px;font-size:.9rem}
 
   .subtools{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
@@ -99,10 +103,18 @@
   .sub.active{background:linear-gradient(135deg,var(--copper),var(--copper-glow));color:#1a1410;border-color:transparent}
   .sub .i{font-size:1.2rem;margin-bottom:2px}
   .poem-out{margin-top:18px;padding:24px;border-radius:18px;background:rgba(20,14,10,.5);border:1px solid var(--border);white-space:pre-wrap;font-family:Georgia,serif;font-size:1.05rem;line-height:1.7;color:#f0e6dc}
-  footer{text-align:center;margin-top:36px;color:var(--muted);font-size:.9rem}
-  .about{margin-top:32px;padding:14px 16px;background:#fff;border:1px solid #e5e7eb;border-radius:12px;color:#000;font-size:.78rem;line-height:1.5}
-  .about h2{color:#000}
-  .about p{margin:0 0 8px;color:#000}
+  footer{text-align:center;margin-top:28px;padding-top:20px;border-top:1px solid var(--border);color:var(--muted);font-size:.85rem;letter-spacing:.02em}
+  .about{margin-top:40px;padding:32px 28px;background:var(--surface);backdrop-filter:blur(20px) saturate(140%);
+    border:1px solid var(--border);border-radius:24px;color:var(--text);font-size:.95rem;line-height:1.7;
+    box-shadow:0 30px 80px -40px rgba(255,154,77,.45);position:relative;overflow:hidden}
+  .about::before{content:"";position:absolute;inset:-40% -20% auto -20%;height:220px;
+    background:radial-gradient(50% 60% at 50% 0%,rgba(255,154,77,.22),transparent 70%);pointer-events:none}
+  .about .eyebrow{display:inline-block;padding:6px 14px;border-radius:999px;font-size:.72rem;font-weight:700;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--copper-glow);
+    border:1px solid rgba(255,154,77,.35);background:rgba(255,154,77,.08)}
+  .about h2{font-family:'Unbounded','Space Grotesk',sans-serif;font-size:clamp(1.4rem,3.4vw,2rem);
+    letter-spacing:-.03em;margin:14px 0 10px;color:#f7ead9}
+  .about p{margin:0 0 12px;color:#e6d6c4;max-width:70ch}
   .anim-stage{position:relative;width:100%;aspect-ratio:1/1;border-radius:18px;overflow:hidden;border:1px solid var(--border);box-shadow:0 20px 60px -20px rgba(255,154,77,.35);background:#0e0a08}
   .anim-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;animation:framecycle 1.6s steps(1,end) infinite}
   .anim-stage img:nth-child(1){animation-delay:0s}
@@ -163,15 +175,15 @@
 <span class="word">exa<span class="ai">Ai</span></span></h1></header>
 
   <nav class="glass tabs">
-    <button class="tab active" data-tab="image">🎨 Image</button>
-    <button class="tab" data-tab="chat">💬 Ask</button>
+    <button class="tab" data-tab="image">🎨 Image</button>
+    <button class="tab active" data-tab="chat">💬 Ask</button>
     <button class="tab" data-tab="app">🛠️ Build App</button>
     <button class="tab" data-tab="others">✨ Others</button>
   </nav>
 
-  <section class="glass panel" id="tab-image">
+  <section class="glass panel hidden" id="tab-image">
     <label>Describe the image you want</label>
-    <textarea id="imgPrompt" placeholder="A futuristic copper city at sunset, neon highlights, cinematic 35mm…"></textarea>
+    <textarea id="imgPrompt" placeholder=""></textarea>
     <label style="margin-top:14px">Style</label>
     <div class="style-chips" id="styleChips">
       <button type="button" class="chip active" data-style="normal">Normal</button>
@@ -190,17 +202,17 @@
     <div class="result" id="imgResult"></div>
   </section>
 
-  <section class="glass panel hidden" id="tab-chat">
+  <section class="glass panel" id="tab-chat">
     <div class="chat" id="chatBox"></div>
     <div class="row">
-      <textarea id="chatInput" placeholder="Ask anything… (Enter to send, Shift+Enter for newline)"></textarea>
+      <textarea id="chatInput" placeholder=""></textarea>
       <button class="btn" id="chatBtn">Send</button>
     </div>
   </section>
 
   <section class="glass panel hidden" id="tab-app">
     <label>Describe the app or webpage you want to build</label>
-    <textarea id="appPrompt" placeholder="A dark-themed calculator… A landing page for a coffee shop… A to-do app…"></textarea>
+    <textarea id="appPrompt" placeholder=""></textarea>
     <button class="btn" id="appBtn">Build App</button>
     <div class="result" id="appResult"></div>
   </section>
@@ -245,15 +257,15 @@
       <p style="color:var(--muted);font-size:.8rem;margin:6px 0 0">Describe ANY shape, object, animal, face or scene — not just standard emojis.</p>
     </div>
     <label id="othersPromptLabel">Editing instruction</label>
-    <textarea id="othersPrompt" placeholder="How should I transform your image?"></textarea>
+    <textarea id="othersPrompt" placeholder=""></textarea>
     <button class="btn" id="othersBtn">✨ Generate</button>
     <div class="result" id="othersResult"></div>
   </section>
 
   <section class="about" id="aboutHexa">
-    <h2 style="font-size:1rem;margin:0 0 8px;color:#000">About Hexa Ai</h2>
-    <p>Generate your photo, build app, animation, emoji, meme, poem, html code, sticker, generated image and caption as your prompt. You can make the prompt from Gemini or Chat GPT, and you can download it to your own device. You can ask anything to us we always try to give you accurate answer.</p>
-    <p>Hexa Ai gives you basically three features: generate images from a prompt, get answers from your question, and build a small app or webpage just by describing it. Hexa Ai provide you animation, meme, poem, caption and so on. Just click to 'other' option and enjoy. This app is basically made by lovable with IT'z Nokibhexa</p>
+    <span class="eyebrow">About Hexa Ai</span>
+    <p>Hexa Ai is a next-generation conversational AI assistant designed to boost your productivity, creativity, and daily workflow. Powered by advanced artificial intelligence — similar to Google Gemini and ChatGPT — it acts as your personal 24/7 thinking partner. Whether you need help drafting professional emails, generating creative content, breaking down complex topics, or brainstorming new ideas, Hexa Ai delivers fast, accurate, and context-aware responses right from your device.</p>
+    <p style="margin-top:22px;font-size:.85rem;color:var(--muted)">Crafted by IT&rsquo;z Nokibhexa with Lovable.</p>
   </section>
   <footer>© Hexa AI • Made by IT'z Nokibhexa &amp; Lovable</footer>
 </div>
@@ -268,207 +280,393 @@
   });
   document.addEventListener('copy',e=>{
     const t=document.activeElement?.tagName;
-    if(t!=='TEXTAREA'&&t!=='INPUT'){e.preventDefault();e.clipboardData.setData('text/plain','')}
+    if(t!=='TEXTAREA'&&t!=='INPUT'&&!document.activeElement?.closest?.('.chat')){e.preventDefault();e.clipboardData.setData('text/plain','')}
   });
   document.addEventListener('keydown',e=>{
     const k=e.key.toLowerCase();
-    // Block view-source, save, devtools, print
     if((e.ctrlKey||e.metaKey)&&['u','s','p'].includes(k)){e.preventDefault();return false}
     if(e.key==='F12'){e.preventDefault();return false}
     if((e.ctrlKey||e.metaKey)&&e.shiftKey&&['i','j','c'].includes(k)){e.preventDefault();return false}
-    // Block paste outside form fields
-    if((e.ctrlKey||e.metaKey)&&k==='v'){
-      const t=document.activeElement?.tagName;
-      if(t!=='TEXTAREA'&&t!=='INPUT'){e.preventDefault();return false}
-    }
-    // Block copy/cut outside form fields
-    if((e.ctrlKey||e.metaKey)&&(k==='c'||k==='x'||k==='a')){
-      const t=document.activeElement?.tagName;
-      if(t!=='TEXTAREA'&&t!=='INPUT'){e.preventDefault();return false}
-    }
+    const t=document.activeElement?.tagName;
+    const inField = t==='TEXTAREA'||t==='INPUT';
+    if((e.ctrlKey||e.metaKey)&&['v','c','x','a'].includes(k)&&!inField){e.preventDefault();return false}
   });
-  // Devtools heuristic — if opened, blank the page
-  (function(){
-    const trap=new Image();let warned=false;
-    Object.defineProperty(trap,'id',{get(){if(!warned){warned=true;document.body&&(document.body.innerHTML='<div style="padding:40px;color:#fff;font-family:sans-serif;text-align:center">Access denied.</div>')}return 'x'}});
-    setInterval(()=>{console.log(trap);console.clear()},1500);
-  })();
 
-  // ===== TABS =====
-  document.querySelectorAll('.tab').forEach(t=>{
+  const $  = s=>document.querySelector(s);
+  const $$ = s=>Array.from(document.querySelectorAll(s));
+
+  // ===== TABS (cached nodes, no repeated queries) =====
+  const TABS=$$('.tab'), PANELS=$$('section.panel');
+  TABS.forEach(t=>{
     t.onclick=()=>{
-      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-      document.querySelectorAll('section.panel').forEach(x=>x.classList.add('hidden'));
-      t.classList.add('active');
-      document.getElementById('tab-'+t.dataset.tab).classList.remove('hidden');
+      TABS.forEach(x=>x.classList.toggle('active',x===t));
+      PANELS.forEach(p=>p.classList.toggle('hidden',p.id!=='tab-'+t.dataset.tab));
     };
   });
 
-  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+  // Light markdown so answers read cleanly (headings, bold, lists, code)
+  function md(src){
+    let s=esc(src);
+    s=s.replace(/```([\s\S]*?)```/g,(m,c)=>`<pre style="white-space:pre-wrap;background:rgba(0,0,0,.35);padding:12px 14px;border-radius:12px;overflow:auto;font-size:.9rem">${c.replace(/^\w*\n/,'')}</pre>`);
+    s=s.replace(/`([^`\n]+)`/g,'<code style="background:rgba(0,0,0,.3);padding:2px 6px;border-radius:6px">$1</code>');
+    s=s.replace(/^###?\s+(.+)$/gm,'<b style="color:var(--copper-glow)">$1</b>');
+    s=s.replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');
+    s=s.replace(/^\s*[-*]\s+(.+)$/gm,'• $1');
+    return s;
+  }
+
+  function friendlyErr(e){
+    const m=(e&&e.message)||'';
+    if(/abort|cancel/i.test(m)) return 'Stopped.';
+    if(/failed to fetch|networkerror|load failed/i.test(m)) return 'No internet connection — please check your network and try again.';
+    if(/needs_key/i.test(m)) return 'Text AI needs a free key. Tap ⚙ Settings (top right) and paste a key from auth.pollinations.ai, Groq or OpenRouter. Images keep working without a key.';
+    if(/timeout/i.test(m)) return 'That took too long. The AI service is slow right now — please try again.';
+    if(/busy|429|502|503|504/i.test(m)) return 'The AI service is busy right now. Please wait a few seconds and try again.';
+    if(/empty reply/i.test(m)) return 'The AI sent back an empty answer. Please rephrase and send again.';
+    if(/image/i.test(m)) return 'Could not create the image right now. Please try again in a moment.';
+    return 'Something went wrong. Please try again.';
+  }
   function loading(btn,on,label){
-    if(on){btn.dataset.label=btn.textContent;btn.disabled=true;btn.innerHTML='<span class="spinner"></span> '+(label||'Working…')}
+    if(on){if(!btn.dataset.label)btn.dataset.label=btn.textContent;btn.disabled=true;btn.innerHTML='<span class="spinner"></span> '+(label||'Working…')}
     else{btn.disabled=false;btn.textContent=btn.dataset.label||'Go'}
   }
 
-  // ===== Upload helper: data URL -> public URL via catbox.moe =====
-  async function dataUrlToFile(dataUrl,name){
-    const r=await fetch(dataUrl); const b=await r.blob();
-    return new File([b],name||'upload.png',{type:b.type||'image/png'});
+  // ===== AI TEXT CONFIG — editable in-app, saved on this device =====
+  const PRESETS={
+    pollinations:{endpoint:'https://text.pollinations.ai/openai',model:'openai',label:'Pollinations (auth.pollinations.ai)'},
+    groq:{endpoint:'https://api.groq.com/openai/v1/chat/completions',model:'llama-3.3-70b-versatile',label:'Groq (console.groq.com/keys)'},
+    openrouter:{endpoint:'https://openrouter.ai/api/v1/chat/completions',model:'meta-llama/llama-3.3-70b-instruct:free',label:'OpenRouter (openrouter.ai/keys)'}
+  };
+  const CFG=Object.assign({provider:'pollinations',endpoint:PRESETS.pollinations.endpoint,model:'openai',apiKey:''},
+    (()=>{try{return JSON.parse(localStorage.getItem('hexa_cfg')||'{}')}catch{return{}}})());
+  const saveCfg=()=>{try{localStorage.setItem('hexa_cfg',JSON.stringify(CFG))}catch{}};
+
+  // Settings button + panel (built here so the page markup stays clean)
+  (function settingsUI(){
+    const btn=document.createElement('button');
+    btn.className='btn alt';
+    btn.textContent='⚙ Settings';
+    btn.style.cssText='position:fixed;top:14px;right:14px;z-index:60;padding:9px 14px;font-size:.85rem';
+    const back=document.createElement('div');
+    back.style.cssText='position:fixed;inset:0;background:rgba(10,7,5,.72);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:70;padding:18px';
+    back.innerHTML=`<div class="glass" style="max-width:460px;width:100%;padding:24px">
+      <h2 style="font-family:Unbounded,sans-serif;font-size:1.2rem;margin-bottom:6px">AI text key</h2>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:14px">Images are free. Chat, captions, poems, memes and app building need a free key.</p>
+      <label>Provider</label>
+      <select id="cfgProv" style="width:100%;padding:12px;border-radius:12px;background:rgba(20,14,10,.6);color:var(--text);border:1px solid var(--border);font:inherit">
+        ${Object.entries(PRESETS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('')}
+      </select>
+      <label style="margin-top:14px">API key</label>
+      <input id="cfgKey" type="password" placeholder="paste key here" autocomplete="off"/>
+      <label style="margin-top:14px">Model</label>
+      <input id="cfgModel" type="text"/>
+      <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end">
+        <button class="btn alt" id="cfgClose">Close</button>
+        <button class="btn" id="cfgSave">Save</button>
+      </div></div>`;
+    document.body.append(btn,back);
+    const prov=back.querySelector('#cfgProv'), key=back.querySelector('#cfgKey'), model=back.querySelector('#cfgModel');
+    const fill=()=>{prov.value=CFG.provider;key.value=CFG.apiKey;model.value=CFG.model};
+    prov.onchange=()=>{const p=PRESETS[prov.value];model.value=p.model};
+    btn.onclick=()=>{fill();back.style.display='flex'};
+    back.querySelector('#cfgClose').onclick=()=>back.style.display='none';
+    back.onclick=e=>{if(e.target===back)back.style.display='none'};
+    back.querySelector('#cfgSave').onclick=()=>{
+      CFG.provider=prov.value; CFG.endpoint=PRESETS[prov.value].endpoint;
+      CFG.apiKey=key.value.trim(); CFG.model=model.value.trim()||PRESETS[prov.value].model;
+      saveCfg(); back.style.display='none';
+    };
+  })();
+
+  // ===== Text AI: streaming, retries, one shared helper =====
+  function aiHeaders(){
+    const h={'Content-Type':'application/json'};
+    if(CFG.apiKey) h['Authorization']='Bearer '+CFG.apiKey;
+    return h;
   }
-  async function uploadToHost(dataUrl){
-    const file=await dataUrlToFile(dataUrl,'hexa-'+Date.now()+'.png');
-    const fd=new FormData();
-    fd.append('reqtype','fileupload');
-    fd.append('fileToUpload',file);
-    const res=await fetch('https://catbox.moe/user/api.php',{method:'POST',body:fd});
-    if(!res.ok) throw new Error('Upload failed');
-    const url=(await res.text()).trim();
-    if(!/^https?:\/\//.test(url)) throw new Error('Upload returned: '+url);
-    return url;
+  /**
+   * askAi(messages|prompt, system, {onToken, signal, temperature, imageDataUrl})
+   * Streams tokens so answers appear immediately instead of after the full reply.
+   */
+  async function askAi(input, system, opts){
+    opts=opts||{};
+    const sys = system || "You are Hexa AI: accurate, concise and genuinely helpful. Follow the user's instructions exactly — match the asked language, length, format and tone. If a format is requested (list, JSON, table, word count), obey it precisely. Never invent facts; say when you are unsure.";
+    const history = Array.isArray(input) ? input : [{role:'user',content: opts.imageDataUrl
+      ? [{type:'text',text:input},{type:'image_url',image_url:{url:opts.imageDataUrl}}]
+      : input}];
+    const body={model:CFG.model,messages:[{role:'system',content:sys},...history],
+      temperature: opts.temperature ?? 0.7, stream: !!opts.onToken};
+    let lastErr=null;
+    for(let attempt=0;attempt<3;attempt++){
+      const ac=new AbortController();
+      const onAbort=()=>ac.abort();
+      opts.signal?.addEventListener('abort',onAbort,{once:true});
+      const timer=setTimeout(()=>ac.abort(),75000);
+      try{
+        const res=await fetch(CFG.endpoint,{method:'POST',headers:aiHeaders(),body:JSON.stringify(body),signal:ac.signal});
+        if([401,402,403].includes(res.status)) throw new Error('NEEDS_KEY');
+        if(res.status===429||res.status>=500){lastErr=new Error('BUSY '+res.status);await sleep(900*(attempt+1));continue}
+        if(!res.ok) throw new Error('AI returned '+res.status);
+
+        if(body.stream && res.body){
+          const reader=res.body.getReader(), dec=new TextDecoder();
+          let buf='', full='';
+          for(;;){
+            const {done,value}=await reader.read();
+            if(done) break;
+            buf+=dec.decode(value,{stream:true});
+            const parts=buf.split('\n');
+            buf=parts.pop();
+            for(const line of parts){
+              const s=line.trim();
+              if(!s.startsWith('data:')) continue;
+              const payload=s.slice(5).trim();
+              if(payload==='[DONE]') continue;
+              try{
+                const j=JSON.parse(payload);
+                const d=j.choices?.[0]?.delta?.content||j.choices?.[0]?.text||'';
+                if(d){full+=d;opts.onToken(full)}
+              }catch{}
+            }
+          }
+          if(full.trim()) return full.trim();
+          lastErr=new Error('Empty reply'); continue;
+        }
+
+        const txt=await res.text();
+        let j=null; try{j=JSON.parse(txt)}catch{}
+        const out=(j&&(j.choices?.[0]?.message?.content ?? j.choices?.[0]?.text))||(!j?txt:'');
+        if(out&&String(out).trim()) return String(out).trim();
+        lastErr=new Error('Empty reply');
+      }catch(e){
+        if(e?.message==='NEEDS_KEY') throw e;
+        if(opts.signal?.aborted) throw new Error('aborted');
+        lastErr = e?.name==='AbortError' ? new Error('TIMEOUT') : e;
+        await sleep(700*(attempt+1));
+      }finally{
+        clearTimeout(timer);
+        opts.signal?.removeEventListener('abort',onAbort);
+      }
+    }
+    throw lastErr||new Error('AI unavailable');
   }
 
-  // ===== IMAGE TAB =====
+  // ===== IMAGE ENGINE — prompt fidelity first =====
   const STYLE_MODIFIERS={
     normal:'highly detailed, sharp focus, professional, 8k',
-    anime:'anime style, vibrant anime illustration, cel shaded, studio ghibli inspired, clean lineart, expressive eyes, sharp, high detail',
-    cartoon:'cartoon style, bold outlines, flat vibrant colors, playful character design, disney pixar inspired, clean shapes',
+    anime:'anime style, vibrant anime illustration, cel shaded, clean lineart, expressive eyes, high detail',
+    cartoon:'cartoon style, bold outlines, flat vibrant colors, playful character design, clean shapes',
     realistic:'hyper realistic, photorealistic, dslr photograph, 50mm lens, natural lighting, ultra detailed skin and texture, 8k',
     pixel:'pixel art, 16-bit retro game art, crisp pixels, limited palette, dithering, sprite style',
-    cinematic:'cinematic still, dramatic lighting, shallow depth of field, 35mm film grain, color graded, movie scene composition',
+    cinematic:'cinematic still, dramatic lighting, shallow depth of field, 35mm film grain, color graded, movie composition',
     '4k':'ultra high resolution 4k, razor sharp, crystal clear detail, professional photography',
     hd:'high definition, crisp, clean sharp detail, vivid colors',
-    bw:'black and white photography, monochrome, high contrast, dramatic shadows, fine grain, timeless',
-    aesthetic:'aesthetic, dreamy soft pastel tones, beautiful composition, moody atmosphere, pinterest worthy, artistic',
-    aura:'glowing magical aura, vibrant energy halo, radiant light particles, ethereal mystical atmosphere, neon glow, fantasy lighting'
+    bw:'black and white photography, monochrome, high contrast, dramatic shadows, fine grain',
+    aesthetic:'aesthetic, dreamy soft pastel tones, beautiful composition, moody atmosphere, artistic',
+    aura:'glowing magical aura, vibrant energy halo, radiant light particles, ethereal atmosphere, neon glow'
   };
   let currentStyle='normal';
-  document.querySelectorAll('#styleChips .chip').forEach(c=>{
-    c.onclick=()=>{
-      document.querySelectorAll('#styleChips .chip').forEach(x=>x.classList.remove('active'));
-      c.classList.add('active');
-      currentStyle=c.dataset.style;
-    };
-  });
+  const CHIPS=$$('#styleChips .chip');
+  CHIPS.forEach(c=>c.onclick=()=>{CHIPS.forEach(x=>x.classList.toggle('active',x===c));currentStyle=c.dataset.style});
 
-  // ===== Hexa Ai watermark on download =====
-  async function watermarkAndDownload(srcUrl, filename){
-    try{
-      const img = await loadImg(srcUrl);
-      const c = document.createElement('canvas');
-      c.width = img.naturalWidth; c.height = img.naturalHeight;
-      const ctx = c.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      const fs = Math.max(14, Math.round(c.width / 42));
-      ctx.font = '600 ' + fs + 'px "Space Grotesk", system-ui, sans-serif';
-      ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
-      const pad = Math.round(fs * 0.9);
-      ctx.shadowColor = 'rgba(0,0,0,0.65)';
-      ctx.shadowBlur = fs * 0.5;
-      ctx.fillStyle = 'rgba(255,255,255,0.92)';
-      ctx.fillText('Hexa Ai', pad, c.height - pad);
-      ctx.shadowBlur = 0;
-      const data = c.toDataURL('image/png');
-      const a = document.createElement('a'); a.href = data; a.download = filename;
-      document.body.appendChild(a); a.click(); a.remove();
-    }catch(e){
-      // CORS fallback: open original in new tab
-      window.open(srcUrl, '_blank');
-    }
+  // Detailed prompts are kept word-for-word (enhance off) so the picture
+  // matches exactly what the user typed; only very short prompts get enhanced.
+  function imgUrl(prompt,{style,seed,size=1024,model='flux',image}={}){
+    const words=prompt.trim().split(/\s+/).length;
+    const mod=style?(STYLE_MODIFIERS[style]||''):'';
+    const p=mod?`${prompt}. ${mod}`:prompt;
+    const q=new URLSearchParams({width:size,height:size,seed:seed??Math.floor(Math.random()*1e6),
+      model,nologo:'true',referrer:'hexa-ai'});
+    if(words<6) q.set('enhance','true');
+    if(image) q.set('image',image);
+    return `https://image.pollinations.ai/prompt/${encodeURIComponent(p)}?${q}`;
   }
-  window.watermarkAndDownload = watermarkAndDownload;
+  function loadImageUrl(url,ms){
+    return new Promise((res,rej)=>{
+      const im=new Image();
+      const t=setTimeout(()=>{im.src='';rej(new Error('TIMEOUT'))},ms||95000);
+      im.onload=()=>{clearTimeout(t);res(url)};
+      im.onerror=()=>{clearTimeout(t);rej(new Error('Image generation failed'))};
+      im.src=url;
+    });
+  }
+  async function generateImage(makeUrl,tries){
+    let lastErr=null;
+    for(let i=0;i<(tries||3);i++){
+      const url=makeUrl(Math.floor(Math.random()*1e6)+i*137);
+      try{ await loadImageUrl(url); return url; }
+      catch(e){ lastErr=e; await sleep(700*(i+1)); }
+    }
+    throw lastErr||new Error('Image generation failed');
+  }
+  const loadImg=src=>new Promise((res,rej)=>{const i=new Image();i.crossOrigin='anonymous';i.onload=()=>res(i);i.onerror=()=>rej(new Error('Image load failed'));i.src=src});
 
-  const imgBtn=document.getElementById('imgBtn');
-  imgBtn.onclick=()=>{
-    const p=document.getElementById('imgPrompt').value.trim();
-    const out=document.getElementById('imgResult');
-    if(!p) return alert('Enter a prompt first.');
-    loading(imgBtn,true,'Generating…'); out.innerHTML='';
-    const seed=Math.floor(Math.random()*1e6);
-    const styleMod=STYLE_MODIFIERS[currentStyle]||STYLE_MODIFIERS.normal;
-    const url=`https://image.pollinations.ai/prompt/${encodeURIComponent(p+', '+styleMod)}?width=1024&height=1024&seed=${seed}&model=flux&nologo=true&enhance=true`;
-    const im=new Image();
-    im.onload=()=>{loading(imgBtn,false);out.innerHTML=`<img src="${url}" alt="generated"/><br/><button class="btn alt" style="margin-top:14px" onclick="watermarkAndDownload('${url}','hexa-ai-image.png')">⬇ Download Image</button>`};
-    im.onerror=()=>{loading(imgBtn,false);out.innerHTML='<p class="err">Failed to generate. Try again.</p>'};
-    im.src=url;
+  function stampHexa(ctx,w,h){
+    const fs=Math.max(14,Math.round(w/42));
+    ctx.font='600 '+fs+'px "Space Grotesk", system-ui, sans-serif';
+    ctx.textAlign='left'; ctx.textBaseline='bottom';
+    ctx.lineWidth=Math.max(2,fs/8); ctx.strokeStyle='rgba(0,0,0,.75)'; ctx.fillStyle='rgba(255,255,255,.95)';
+    const pad=Math.round(fs*0.9);
+    ctx.strokeText('Hexa Ai',pad,h-pad); ctx.fillText('Hexa Ai',pad,h-pad);
+  }
+  async function stamped(srcUrl){
+    const img=await loadImg(srcUrl);
+    const c=document.createElement('canvas');
+    c.width=img.naturalWidth; c.height=img.naturalHeight;
+    const ctx=c.getContext('2d');
+    ctx.drawImage(img,0,0); stampHexa(ctx,c.width,c.height);
+    return c.toDataURL('image/png');
+  }
+  async function watermarkAndDownload(srcUrl,filename){
+    try{
+      const data=await stamped(srcUrl);
+      const a=document.createElement('a'); a.href=data; a.download=filename||'hexa-ai.png'; a.click();
+    }catch{ window.open(srcUrl,'_blank'); }
+  }
+  window.watermarkAndDownload=watermarkAndDownload;
+
+  const imgCard=(url,name)=>`<img src="${url}" alt="generated" loading="lazy"/><br/>
+    <button class="btn alt" style="margin-top:14px" onclick="watermarkAndDownload('${url}','${name}')">⬇ Download</button>`;
+
+  // ===== IMAGE TAB =====
+  const imgBtn=$('#imgBtn');
+  imgBtn.onclick=async()=>{
+    const p=$('#imgPrompt').value.trim();
+    const out=$('#imgResult');
+    if(!p){$('#imgPrompt').focus();return}
+    loading(imgBtn,true,'Generating…'); out.innerHTML='<p style="color:var(--muted)">Painting your image…</p>';
+    try{
+      const url=await generateImage(seed=>imgUrl(p,{style:currentStyle,seed}));
+      out.innerHTML=imgCard(url,'hexa-ai-image.png');
+    }catch(e){ out.innerHTML=`<p class="err">${esc(friendlyErr(e))}</p>`; }
+    loading(imgBtn,false);
   };
 
-  // ===== CHAT (Pollinations text) =====
-  async function askAi(prompt, system, imageDataUrl){
-    const userContent = imageDataUrl
-      ? [{type:'text',text:prompt},{type:'image_url',image_url:{url:imageDataUrl}}]
-      : prompt;
-    const body={messages:[{role:'system',content: system || "You are Hexa AI, a brilliant, precise, friendly assistant. Give accurate, well-structured answers."},{role:'user',content:userContent}],model:'openai'};
-    const res=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    if(!res.ok) throw new Error('AI returned '+res.status);
-    const j=await res.json();
-    return j.choices?.[0]?.message?.content || '(no reply)';
+  // ===== CHAT =====
+  const chatBox=$('#chatBox'), chatInput=$('#chatInput'), chatBtn=$('#chatBtn');
+  const history=[];                       // conversation memory -> answers stay on topic
+  const MAX_TURNS=16;
+
+  function hexaGreeting(){
+    const h=new Date().getHours();
+    const part = h<5?"I hope your whole day be happy"
+      : h<12?"Good morning" : h<14?"Good noon" : h<17?"Good afternoon"
+      : h<21?"Good evening" : "I hope your whole day be happy";
+    return part+"! It's Hexa Ai — how can I help you?";
+  }
+  chatBox.insertAdjacentHTML('beforeend',`<div class="msg bot">${esc(hexaGreeting())}</div>`);
+
+  const atBottom=()=>chatBox.scrollHeight-chatBox.scrollTop-chatBox.clientHeight<120;
+  const scrollDown=()=>{chatBox.scrollTop=chatBox.scrollHeight};
+
+  function detectIntent(text){
+    const imgRe=/^(image|img|picture|photo|draw|generate (an? )?image|make (an? )?image)\s*[:\-]\s*/i;
+    const appRe=/^(app|build (an? )?app|website|html app|make (an? )?app|code app)\s*[:\-]\s*/i;
+    if(imgRe.test(text)) return {type:'image',prompt:text.replace(imgRe,'').trim()};
+    if(appRe.test(text)) return {type:'app',prompt:text.replace(appRe,'').trim()};
+    return {type:'chat',prompt:text};
   }
 
-  const chatBox=document.getElementById('chatBox');
-  const chatInput=document.getElementById('chatInput');
-  const chatBtn=document.getElementById('chatBtn');
-  async function send(){
-    const msg=chatInput.value.trim(); if(!msg) return;
-    chatBox.insertAdjacentHTML('beforeend',`<div class="msg user">${esc(msg)}</div>`);
-    chatInput.value='';
-    const ld=document.createElement('div'); ld.className='msg bot loading'; ld.textContent='Thinking…';
-    chatBox.appendChild(ld); chatBox.scrollTop=chatBox.scrollHeight;
-    loading(chatBtn,true,'Thinking…');
-    try{const r=await askAi(msg);ld.classList.remove('loading');ld.textContent=r}
-    catch(e){ld.classList.remove('loading');ld.style.color='#ff8a8a';ld.textContent='Error: '+e.message}
-    loading(chatBtn,false); chatBox.scrollTop=chatBox.scrollHeight;
+  const APP_SYS="You are a world-class web developer. Output ONLY one complete, valid, self-contained HTML document (inline CSS and JS). No markdown, no code fences, no explanation — start with <!DOCTYPE html>. Build exactly what the user described, including every feature they named. Modern, responsive, polished, accessible, fully working.";
+  const stripFence=c=>c.replace(/^```html\s*/i,'').replace(/^```\s*/,'').replace(/```\s*$/,'').trim();
+  function appPreview(code,label){
+    const dl=URL.createObjectURL(new Blob([code],{type:'text/html'}));
+    return `${label?label+'<br/>':''}<iframe srcdoc="${esc(code)}" sandbox="allow-scripts" loading="lazy"
+      style="width:100%;height:340px;border:1px solid var(--border);border-radius:12px;margin-top:8px;background:#fff"></iframe><br/>
+      <a href="${dl}" download="hexa-app.html" style="display:inline-block;margin-top:10px"><button class="btn alt">⬇ Download App</button></a>`;
   }
-  chatBtn.onclick=send;
+
+  let chatAbort=null;
+  async function send(retryText){
+    const msg=(retryText ?? chatInput.value).trim();
+    if(!msg||chatAbort) return;
+    if(!retryText) chatInput.value='';
+    chatBox.insertAdjacentHTML('beforeend',`<div class="msg user">${esc(msg)}</div>`);
+    const ld=document.createElement('div');
+    ld.className='msg bot loading'; ld.textContent='Thinking…';
+    chatBox.appendChild(ld); scrollDown();
+
+    chatAbort=new AbortController();
+    loading(chatBtn,true,'Stop');
+    chatBtn.disabled=false;
+    chatBtn.onclick=()=>chatAbort?.abort();
+
+    try{
+      const intent=detectIntent(msg);
+      if(intent.type==='image'){
+        ld.textContent='Generating image…';
+        const url=await generateImage(seed=>imgUrl(intent.prompt,{style:currentStyle,seed}));
+        ld.innerHTML=`Here's your image for: <b>${esc(intent.prompt)}</b><br/>
+          <img src="${url}" style="max-width:100%;border-radius:10px;margin-top:8px" alt="generated"/><br/>
+          <button class="btn alt" style="margin-top:10px" onclick="watermarkAndDownload('${url}','hexa-ai-image.png')">⬇ Download</button>`;
+      } else if(intent.type==='app'){
+        ld.textContent='Building app…';
+        const code=stripFence(await askAi(intent.prompt,APP_SYS,{temperature:0.4,signal:chatAbort.signal}));
+        ld.innerHTML=appPreview(code,`Built a mini app for: <b>${esc(intent.prompt)}</b>`);
+      } else {
+        history.push({role:'user',content:msg});
+        let stick=true;
+        const answer=await askAi(history.slice(-MAX_TURNS),null,{
+          signal:chatAbort.signal,
+          onToken:t=>{ ld.classList.remove('loading'); stick=atBottom(); ld.innerHTML=md(t); if(stick)scrollDown(); }
+        });
+        history.push({role:'assistant',content:answer});
+        ld.innerHTML=md(answer);
+      }
+      ld.classList.remove('loading');
+    }catch(e){
+      ld.classList.remove('loading'); ld.style.color='#ff8a8a';
+      ld.innerHTML=esc(friendlyErr(e))+' <button class="btn alt" style="margin-left:8px;padding:4px 10px;font-size:.8rem" data-retry="1">Retry</button>';
+      ld.querySelector('[data-retry]').onclick=()=>{ld.remove();send(msg)};
+    }
+    chatAbort=null;
+    loading(chatBtn,false);
+    chatBtn.onclick=()=>send();
+    if(atBottom()) scrollDown();
+  }
+  chatBtn.onclick=()=>send();
   chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});
 
-  // ===== APP BUILDER =====
-  const appBtn=document.getElementById('appBtn');
+  // ===== APP BUILDER TAB =====
+  const appBtn=$('#appBtn');
   appBtn.onclick=async()=>{
-    const p=document.getElementById('appPrompt').value.trim();
-    const out=document.getElementById('appResult');
-    if(!p) return alert('Describe your app first.');
-    loading(appBtn,true,'Building…'); out.innerHTML='';
+    const p=$('#appPrompt').value.trim();
+    const out=$('#appResult');
+    if(!p){$('#appPrompt').focus();return}
+    loading(appBtn,true,'Building…'); out.innerHTML='<p style="color:var(--muted)">Writing the code…</p>';
     try{
-      const sys="You are a world-class web developer. Output ONLY one complete, valid, self-contained HTML document (inline CSS and JS). No markdown, no code fences, no explanation — start with <!DOCTYPE html>. Modern, responsive, polished typography, smooth animations, accessible, fully functional.";
-      let code=await askAi(p,sys);
-      code=code.replace(/^```html\s*/i,'').replace(/^```\s*/,'').replace(/```\s*$/,'').trim();
-      const blob=new Blob([code],{type:'text/html'});
-      const dl=URL.createObjectURL(blob);
-      out.innerHTML=`<iframe class="preview" srcdoc="${esc(code)}" sandbox="allow-scripts"></iframe><br/><a href="${dl}" download="hexa-app.html" style="display:inline-block;margin-top:14px"><button class="btn alt">⬇ Download App (HTML)</button></a>`;
-    }catch(e){out.innerHTML=`<p class="err">Error: ${e.message}</p>`}
+      const code=stripFence(await askAi(p,APP_SYS,{temperature:0.4}));
+      const dl=URL.createObjectURL(new Blob([code],{type:'text/html'}));
+      out.innerHTML=`<iframe class="preview" srcdoc="${esc(code)}" sandbox="allow-scripts" loading="lazy"></iframe><br/>
+        <a href="${dl}" download="hexa-app.html" style="display:inline-block;margin-top:14px"><button class="btn alt">⬇ Download App (HTML)</button></a>`;
+    }catch(e){ out.innerHTML=`<p class="err">${esc(friendlyErr(e))}</p>`; }
     loading(appBtn,false);
   };
 
   // ===== OTHERS =====
   let currentSub='gif', uploadDataUrl=null;
-  const placeholders={
-    gif:"A cat dancing under disco lights, vibrant cartoon…",
-    meme:"Topic for the meme (e.g. 'Monday morning programmers')",
-    caption:"Describe the photo or topic (e.g. 'sunset on the beach with friends')",
-    poem:"Theme: an ocean at midnight under a copper moon…",
-    code:"A glassmorphism pricing page with hover animation…",
-    sticker:"A cute astronaut cat holding a star…",
-    emoji:"A grinning sun with sunglasses…"
-  };
+  const placeholders={gif:"",meme:"",caption:"",poem:"",code:"",sticker:"",emoji:""};
   const labels={caption:"Photo or topic to caption",meme:"Meme topic"};
   const showsUpload={caption:false,meme:false,gif:false,poem:false,code:false,sticker:false,emoji:false};
-
-  document.querySelectorAll('.sub').forEach(b=>{
+  const SUBS=$$('.sub');
+  SUBS.forEach(b=>{
     b.onclick=()=>{
-      document.querySelectorAll('.sub').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
+      SUBS.forEach(x=>x.classList.toggle('active',x===b));
       currentSub=b.dataset.sub;
-      document.getElementById('othersUpload').style.display = showsUpload[currentSub] ? 'block' : 'none';
-      document.getElementById('emojiStyleWrap').style.display = (currentSub==='emoji') ? 'block' : 'none';
-      document.getElementById('othersPromptLabel').textContent = labels[currentSub] || 'Describe what you want';
-      document.getElementById('othersPrompt').placeholder = placeholders[currentSub];
-      document.getElementById('othersResult').innerHTML='';
+      $('#othersUpload').style.display = showsUpload[currentSub]?'block':'none';
+      $('#emojiStyleWrap').style.display = currentSub==='emoji'?'block':'none';
+      $('#othersPromptLabel').textContent = labels[currentSub]||'Describe what you want';
+      $('#othersPrompt').placeholder = placeholders[currentSub]||'';
+      $('#othersResult').innerHTML='';
     };
   });
-  document.getElementById('othersFile').onchange=e=>{
+  $('#othersFile').onchange=e=>{
     const f=e.target.files[0]; if(!f) return;
     const r=new FileReader();
-    r.onload=()=>{uploadDataUrl=r.result;const im=document.getElementById('othersPreviewUp');im.src=r.result;im.style.display='block'};
+    r.onload=()=>{uploadDataUrl=r.result;const im=$('#othersPreviewUp');im.src=r.result;im.style.display='block'};
     r.readAsDataURL(f);
   };
 
@@ -483,7 +681,7 @@
     pixar:"Pixar-style 3D character, cinematic lighting, subsurface scattering, ultra detailed, expressive, centered, solid white background",
     pixel:"8-bit pixel art emoji, crisp pixels, limited palette, retro game sprite, centered, solid white background",
     handdrawn:"hand-drawn doodle emoji, ink lines, watercolor wash, sketchbook feel, centered, solid white background",
-    neon:"neon glow emoji, glowing outline, dark navy background turning into solid white at edges, vivid neon colors, centered",
+    neon:"neon glow emoji, glowing outline, vivid neon colors, centered, solid white background",
     clay:"claymation plasticine emoji, handmade clay texture, soft studio lighting, centered, solid white background",
     papercut:"paper-cut craft emoji, layered cardstock, soft drop shadows, centered, solid white background",
     chrome:"chrome metallic 3D emoji, mirror reflections, Y2K aesthetic, iridescent highlights, centered, solid white background",
@@ -491,48 +689,17 @@
     minimal:"minimal line-icon emoji, single weight black stroke, geometric, flat solid white background, centered"
   };
 
-  function pollImg(prompt, style, seed, variant){
-    seed=seed||Math.floor(Math.random()*1e6);
-    let p=prompt;
-    if(style==='sticker') p='die-cut sticker, thick white border, vibrant flat cartoon, isolated on solid white background, glossy. '+prompt;
-    else if(style==='emoji'){
-      const pre = EMOJI_STYLES[variant] || EMOJI_STYLES.apple;
-      // Put the USER SUBJECT first so the model actually draws it,
-      // then apply the chosen emoji style as modifiers.
-      p = prompt + ', as an emoji. Style: ' + pre + '. The subject MUST be exactly: ' + prompt;
-    }
-    else if(style==='gif') p='dynamic action keyframe, motion blur, vibrant cartoon. '+prompt;
-    else if(style==='meme') p='meme photograph, bold cinematic lighting, single clear subject, blank space top and bottom, high contrast. '+prompt;
-    return `https://image.pollinations.ai/prompt/${encodeURIComponent(p)}?width=1024&height=1024&seed=${seed}&model=flux&nologo=true&enhance=true`;
+  // Subject always leads the prompt so the picture shows what was asked for.
+  function subUrl(prompt,sub,seed,variant){
+    if(sub==='sticker') return imgUrl(`${prompt}. die-cut sticker, thick white border, vibrant flat cartoon, isolated on solid white background, glossy`,{seed});
+    if(sub==='emoji')   return imgUrl(`${prompt}, drawn as a single emoji icon. The subject must be exactly: ${prompt}. Style: ${EMOJI_STYLES[variant]||EMOJI_STYLES.apple}`,{seed});
+    if(sub==='gif')     return imgUrl(`${prompt}. dynamic action keyframe, motion blur, vibrant cartoon`,{seed});
+    if(sub==='meme')    return imgUrl(`${prompt}. meme photograph, bold cinematic lighting, single clear subject, blank space top and bottom, high contrast`,{seed});
+    return imgUrl(prompt,{seed});
   }
 
-  // Upload a data URL to catbox.moe so the kontext img2img model can fetch it
-  async function uploadToHost(dataUrl){
-    const res = await fetch(dataUrl);
-    const blob = await res.blob();
-    const fd = new FormData();
-    fd.append('reqtype','fileupload');
-    fd.append('fileToUpload', blob, 'upload.png');
-    const r = await fetch('https://catbox.moe/user/api.php', { method:'POST', body: fd });
-    if(!r.ok) throw new Error('Upload failed');
-    const url = (await r.text()).trim();
-    if(!/^https?:\/\//.test(url)) throw new Error('Upload returned: '+url);
-    return url;
-  }
-
-
-
-  // Real image-to-image via Pollinations kontext model
-  function kontextImg(prompt,imageUrl,seed){
-    seed=seed||Math.floor(Math.random()*1e6);
-    return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&seed=${seed}&model=kontext&image=${encodeURIComponent(imageUrl)}&nologo=true`;
-  }
-
-  function loadImg(src){return new Promise((res,rej)=>{const i=new Image();i.crossOrigin='anonymous';i.onload=()=>res(i);i.onerror=()=>rej(new Error('Image load failed'));i.src=src})}
-
-  // Composite meme captions onto image canvas
-  async function renderMeme(imgUrl, top, bottom){
-    const img=await loadImg(imgUrl);
+  async function renderMeme(imgSrc,top,bottom){
+    const img=await loadImg(imgSrc);
     const c=document.createElement('canvas');
     c.width=img.naturalWidth; c.height=img.naturalHeight;
     const ctx=c.getContext('2d');
@@ -541,103 +708,89 @@
     ctx.font=`900 ${fs}px Impact, "Arial Black", sans-serif`;
     ctx.textAlign='center'; ctx.textBaseline='top';
     ctx.lineWidth=Math.max(4,fs/10); ctx.strokeStyle='#000'; ctx.fillStyle='#fff';
-    const wrap=(text,maxW)=>{
-      const words=text.split(/\s+/); const lines=[]; let line='';
-      for(const w of words){const t=line?line+' '+w:w; if(ctx.measureText(t).width>maxW&&line){lines.push(line);line=w}else line=t}
+    const wrap=text=>{
+      const words=text.split(/\s+/), lines=[]; let line='';
+      for(const w of words){const t=line?line+' '+w:w; if(ctx.measureText(t).width>c.width*0.92&&line){lines.push(line);line=w}else line=t}
       if(line)lines.push(line); return lines;
     };
-    const draw=(text,yStart,fromBottom)=>{
+    const draw=(text,fromBottom)=>{
       if(!text) return;
-      const lines=wrap(text.toUpperCase(),c.width*0.92);
-      const lh=fs*1.1;
+      const lines=wrap(String(text).toUpperCase()), lh=fs*1.1;
       lines.forEach((ln,i)=>{
-        const y=fromBottom ? c.height - (lines.length-i)*lh - 20 : yStart + i*lh;
-        ctx.strokeText(ln,c.width/2,y);
-        ctx.fillText(ln,c.width/2,y);
+        const y=fromBottom?c.height-(lines.length-i)*lh-20:20+i*lh;
+        ctx.strokeText(ln,c.width/2,y); ctx.fillText(ln,c.width/2,y);
       });
     };
-    draw(top,20,false);
-    draw(bottom,0,true);
-    // Hexa Ai watermark (bottom-left, small)
-    const wfs = Math.max(14, Math.round(c.width / 42));
-    ctx.font = '600 ' + wfs + 'px "Space Grotesk", system-ui, sans-serif';
-    ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
-    ctx.lineWidth = Math.max(2, wfs/8); ctx.strokeStyle = 'rgba(0,0,0,0.75)';
-    ctx.fillStyle = 'rgba(255,255,255,0.95)';
-    const wpad = Math.round(wfs * 0.9);
-    ctx.strokeText('Hexa Ai', wpad, c.height - wpad);
-    ctx.fillText('Hexa Ai', wpad, c.height - wpad);
+    draw(top,false); draw(bottom,true);
+    stampHexa(ctx,c.width,c.height);
     return c.toDataURL('image/png');
   }
 
-  const oBtn=document.getElementById('othersBtn');
+  const oBtn=$('#othersBtn');
   oBtn.onclick=async()=>{
-    const p=document.getElementById('othersPrompt').value.trim();
-    const out=document.getElementById('othersResult');
-    if(!p) return alert('Enter a prompt first.');
+    const p=$('#othersPrompt').value.trim();
+    const out=$('#othersResult');
+    if(!p){$('#othersPrompt').focus();return}
     loading(oBtn,true,'Working…'); out.innerHTML='';
     try{
       if(currentSub==='gif'){
-        // Real animation: 4 frames with varying seeds, cycle them in CSS
         out.innerHTML='<p style="color:var(--muted)">Generating 4 animation frames…</p>';
-        const frames=[];
-        for(let i=0;i<4;i++){
-          const seed=Math.floor(Math.random()*1e6)+i*97;
-          const url=pollImg(p+' frame '+(i+1)+', motion sequence',  'gif', seed);
-          await loadImg(url); frames.push(url);
-        }
+        // Frames run in parallel — roughly 4x faster than one after another.
+        const beats=['starting pose','mid motion','peak of the action','follow-through'];
+        const urls=await Promise.all(beats.map((b,i)=>
+          generateImage(sd=>subUrl(`${p}, ${b}, frame ${i+1} of a 4 frame motion sequence, identical character and background`,'gif',sd),2)));
+        const frames=await Promise.all(urls.map(stamped));
         out.innerHTML=`<div class="anim-stage">${frames.map(f=>`<img src="${f}"/>`).join('')}</div>
-          <p style="color:var(--muted);font-size:.85rem;margin-top:10px">Live animation cycling 4 AI frames at ~2.5fps.</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">${frames.map((f,i)=>`<a href="${f}" target="_blank" download="hexa-anim-${i+1}.png"><button class="btn alt">⬇ Frame ${i+1}</button></a>`).join('')}</div>`;
-        loading(oBtn,false);
+          <p style="color:var(--muted);font-size:.85rem;margin-top:10px">Live animation cycling 4 AI frames. Watermarked with Hexa Ai.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">${frames.map((f,i)=>`<a href="${f}" download="hexa-anim-${i+1}.png"><button class="btn alt">⬇ Frame ${i+1}</button></a>`).join('')}</div>`;
       }
       else if(currentSub==='meme'){
-        // Make Meme: AI writes top + bottom, generate base image, composite text
-        const sys='You write killer memes. Given a topic, return strictly JSON: {"image":"a vivid concrete visual scene to depict, photographic, single subject","top":"TOP CAPTION (short, all caps ok)","bottom":"BOTTOM CAPTION (the punchline)"}. No markdown, no commentary.';
-        const raw=await askAi(p,sys);
+        out.innerHTML='<p style="color:var(--muted)">Writing the joke…</p>';
+        const sys='You write killer memes. Given a topic, return strictly JSON: {"image":"a vivid concrete visual scene to depict, photographic, single subject","top":"TOP CAPTION (short)","bottom":"BOTTOM CAPTION (the punchline)"}. The scene and captions must be about the given topic. No markdown, no commentary.';
+        const raw=await askAi(p,sys,{temperature:0.9});
         let m; try{m=JSON.parse(raw.replace(/^```(?:json)?/i,'').replace(/```$/,'').trim())}
         catch{m={image:p,top:p.toUpperCase(),bottom:'WHEN AI MEMES BACK'}}
-        const url=pollImg(m.image,'meme');
-        await loadImg(url);
+        out.innerHTML='<p style="color:var(--muted)">Painting the meme…</p>';
+        const url=await generateImage(sd=>subUrl(m.image||p,'meme',sd));
         const data=await renderMeme(url,m.top,m.bottom);
         out.innerHTML=`<img src="${data}"/><br/><a href="${data}" download="hexa-meme.png" style="display:inline-block;margin-top:14px"><button class="btn alt">⬇ Download Meme</button></a>`;
-        loading(oBtn,false);
       }
       else if(currentSub==='caption'){
-        // Make Caption: from a description/topic, no upload required
-        out.innerHTML='<p style="color:var(--muted)">Writing captions…</p>';
-        const sys='You are a viral social-media caption writer. Given a photo description or topic, return EXACTLY 5 captions, one per line, numbered 1-5. Mix witty, poetic, punchy, romantic, and clever. Include 1-2 relevant emojis where natural. No commentary, no extra text.';
-        const text=await askAi('Topic / photo description: '+p+'\nWrite 5 captions.',sys);
-        const lines=text.split(/\n+/).map(s=>s.trim()).filter(s=>/^\d+[.)]/.test(s)||s.length>2).slice(0,8);
-        out.innerHTML=`<div class="caption-out"><b style="color:var(--copper-glow)">5 captions for: "${esc(p)}"</b>
-          ${lines.map(l=>`<div class="cap">${esc(l.replace(/^\d+[.)]\s*/,''))}</div>`).join('')}</div>`;
-        loading(oBtn,false);
+        const sys='You are a viral social-media caption writer. Given a photo description or topic, return EXACTLY 5 captions about that exact topic, one per line, numbered 1-5. Mix witty, poetic, punchy, romantic and clever. 1-2 fitting emojis where natural. No commentary.';
+        const box=document.createElement('div');
+        box.className='caption-out';
+        box.innerHTML=`<b style="color:var(--copper-glow)">5 captions for: "${esc(p)}"</b><div class="cap">Writing…</div>`;
+        out.innerHTML=''; out.appendChild(box);
+        const render=t=>{
+          const lines=t.split(/\n+/).map(s=>s.trim()).filter(s=>s.length>2).slice(0,5);
+          box.innerHTML=`<b style="color:var(--copper-glow)">5 captions for: "${esc(p)}"</b>`+
+            lines.map(l=>`<div class="cap">${esc(l.replace(/^\d+[.)]\s*/,''))}</div>`).join('');
+        };
+        render(await askAi('Topic / photo description: '+p+'\nWrite 5 captions.',sys,{temperature:0.9,onToken:render}));
       }
       else if(currentSub==='sticker'||currentSub==='emoji'){
-        const variant = document.getElementById('emojiStyle').value;
-        const url=pollImg(p,currentSub,null,variant);
-        await loadImg(url);
-        out.innerHTML=`<img src="${url}"/><br/><button class="btn alt" style="margin-top:14px" onclick="watermarkAndDownload('${url}','hexa-${currentSub}.png')">⬇ Download</button>`;
-        loading(oBtn,false);
+        out.innerHTML='<p style="color:var(--muted)">Drawing…</p>';
+        const variant=$('#emojiStyle').value;
+        const url=await generateImage(sd=>subUrl(p,currentSub,sd,variant));
+        out.innerHTML=imgCard(url,`hexa-${currentSub}.png`);
       }
       else if(currentSub==='poem'){
-        const sys="You are a master poet. Write a beautiful, evocative poem on the user's theme. Vivid imagery, rhythm, emotional depth. Return only the poem.";
-        const t=await askAi(p,sys);
-        out.innerHTML=`<div class="poem-out">${esc(t)}</div>`;
-        loading(oBtn,false);
+        const sys="You are a master poet. Write one beautiful, evocative poem on exactly the user's theme, in the language they used. Vivid imagery, rhythm, emotional depth. Return only the poem.";
+        const box=document.createElement('div');
+        box.className='poem-out'; box.textContent='Writing…';
+        out.innerHTML=''; out.appendChild(box);
+        box.textContent=await askAi(p,sys,{temperature:0.95,onToken:t=>{box.textContent=t}});
       }
       else if(currentSub==='code'){
-        const sys="You are a world-class web developer. Output ONLY one complete valid self-contained HTML document (inline CSS/JS). No markdown, no fences. Start with <!DOCTYPE html>. Modern, responsive, polished.";
-        let code=await askAi(p,sys);
-        code=code.replace(/^```html\s*/i,'').replace(/^```\s*/,'').replace(/```\s*$/,'').trim();
-        const blob=new Blob([code],{type:'text/html'});
-        const dl=URL.createObjectURL(blob);
-        out.innerHTML=`<iframe class="preview" srcdoc="${esc(code)}" sandbox="allow-scripts"></iframe><br/><a href="${dl}" download="hexa-code.html" style="display:inline-block;margin-top:14px"><button class="btn alt">⬇ Download HTML</button></a>`;
-        loading(oBtn,false);
+        out.innerHTML='<p style="color:var(--muted)">Writing the code…</p>';
+        const code=stripFence(await askAi(p,APP_SYS,{temperature:0.4}));
+        const dl=URL.createObjectURL(new Blob([code],{type:'text/html'}));
+        out.innerHTML=`<iframe class="preview" srcdoc="${esc(code)}" sandbox="allow-scripts" loading="lazy"></iframe><br/>
+          <a href="${dl}" download="hexa-code.html" style="display:inline-block;margin-top:14px"><button class="btn alt">⬇ Download HTML</button></a>`;
       }
-    }catch(e){out.innerHTML=`<p class="err">Error: ${e.message}</p>`;loading(oBtn,false)}
+    }catch(e){ out.innerHTML=`<p class="err">${esc(friendlyErr(e))}</p>`; }
+    loading(oBtn,false);
   };
-
 </script>
 </body>
 </html>
