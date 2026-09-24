@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -124,9 +125,7 @@
   @keyframes framecycle{0%,22%{opacity:1}25%,100%{opacity:0}}
   .caption-out{margin-top:18px;padding:20px;border-radius:18px;background:rgba(20,14,10,.5);border:1px solid var(--border);font-size:1.05rem;line-height:1.6;color:#f0e6dc}
   .caption-out .cap{padding:10px 14px;border-radius:12px;background:rgba(60,42,30,.6);margin-top:8px;border-left:3px solid var(--copper-glow)}
-  html,body,.wrap,*{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-webkit-touch-callout:none}
   textarea,input,.chat,.msg{-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;user-select:text}
-  img{-webkit-user-drag:none;user-drag:none;pointer-events:auto}
 
   .style-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
   .chip{padding:8px 14px;border-radius:999px;border:1px solid var(--border);background:rgba(60,42,30,.5);color:#f0e6dc;font-family:inherit;font-weight:600;font-size:.85rem;cursor:pointer;transition:.15s}
@@ -280,27 +279,6 @@
 </div>
 
 <script>
-  // ===== SOURCE / COPY PROTECTION =====
-  document.addEventListener('contextmenu',e=>e.preventDefault());
-  document.addEventListener('dragstart',e=>e.preventDefault());
-  document.addEventListener('selectstart',e=>{
-    const t=e.target.tagName;
-    if(t!=='TEXTAREA'&&t!=='INPUT'&&!e.target.closest('.chat')) e.preventDefault();
-  });
-  document.addEventListener('copy',e=>{
-    const t=document.activeElement?.tagName;
-    if(t!=='TEXTAREA'&&t!=='INPUT'&&!document.activeElement?.closest?.('.chat')){e.preventDefault();e.clipboardData.setData('text/plain','')}
-  });
-  document.addEventListener('keydown',e=>{
-    const k=e.key.toLowerCase();
-    if((e.ctrlKey||e.metaKey)&&['u','s','p'].includes(k)){e.preventDefault();return false}
-    if(e.key==='F12'){e.preventDefault();return false}
-    if((e.ctrlKey||e.metaKey)&&e.shiftKey&&['i','j','c'].includes(k)){e.preventDefault();return false}
-    const t=document.activeElement?.tagName;
-    const inField = t==='TEXTAREA'||t==='INPUT';
-    if((e.ctrlKey||e.metaKey)&&['v','c','x','a'].includes(k)&&!inField){e.preventDefault();return false}
-  });
-
   const $  = s=>document.querySelector(s);
   const $$ = s=>Array.from(document.querySelectorAll(s));
 
