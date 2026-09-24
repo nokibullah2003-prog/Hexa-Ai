@@ -21,7 +21,7 @@
       linear-gradient(180deg,#1a1410,#0e0a08);
     background-attachment:fixed;-webkit-font-smoothing:antialiased;
   }
-  .wrap{max-width:920px;margin:0 auto;padding:40px 20px 60px}
+  .wrap{width:min(100%,1440px);margin:0 auto;padding:32px clamp(16px,3vw,48px) 60px}
   header{text-align:center;position:relative}
   h1.brand{margin-top:14px;display:inline-flex;align-items:center;justify-content:center;gap:0;
     font-family:'Unbounded','Space Grotesk',sans-serif;
@@ -53,7 +53,7 @@
 
   .glass{background:var(--surface);backdrop-filter:blur(20px) saturate(140%);
     border:1px solid var(--border);border-radius:20px}
-  .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px;margin-top:34px}
+  .tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:8px;margin-top:34px}
   .tab{padding:14px 8px;border:0;background:transparent;color:var(--muted);font-weight:600;
     border-radius:14px;cursor:pointer;font-size:.95rem;font-family:inherit;transition:.2s}
   .tab.active{background:linear-gradient(135deg,var(--copper),var(--copper-glow));color:#1a1410;
@@ -166,6 +166,15 @@
   .i2i-spin{width:28px;height:28px;border-radius:50%;border:3px solid rgba(255,154,77,.25);
     border-top-color:var(--copper-glow);animation:spin .8s linear infinite;margin:0 auto 10px}
 
+  section.panel{width:100%;min-height:calc(100vh - 330px)}
+  section.panel > *{max-width:none}
+  @media(max-width:640px){
+    .wrap{padding:22px 12px 40px}
+    .tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .panel{padding:16px}
+    section.panel{min-height:auto}
+    .chat{height:58vh;min-height:360px}
+  }
 </style>
 </head>
 <body>
@@ -322,7 +331,7 @@
     const m=(e&&e.message)||'';
     if(/abort|cancel/i.test(m)) return 'Stopped.';
     if(/failed to fetch|networkerror|load failed/i.test(m)) return 'No internet connection — please check your network and try again.';
-    if(/needs_key/i.test(m)) return 'Text AI needs a free key. Tap ⚙ Settings (top right) and paste a key from auth.pollinations.ai, Groq or OpenRouter. Images keep working without a key.';
+    if(/needs_key/i.test(m)) return 'Text AI is temporarily unavailable. Images remain available — please try text tools again later.';
     if(/timeout/i.test(m)) return 'That took too long. The AI service is slow right now — please try again.';
     if(/busy|429|502|503|504/i.test(m)) return 'The AI service is busy right now. Please wait a few seconds and try again.';
     if(/empty reply/i.test(m)) return 'The AI sent back an empty answer. Please rephrase and send again.';
@@ -344,42 +353,7 @@
     (()=>{try{return JSON.parse(localStorage.getItem('hexa_cfg')||'{}')}catch{return{}}})());
   const saveCfg=()=>{try{localStorage.setItem('hexa_cfg',JSON.stringify(CFG))}catch{}};
 
-  // Settings button + panel (built here so the page markup stays clean)
-  (function settingsUI(){
-    const btn=document.createElement('button');
-    btn.className='btn alt';
-    btn.textContent='⚙ Settings';
-    btn.style.cssText='position:fixed;top:14px;right:14px;z-index:60;padding:9px 14px;font-size:.85rem';
-    const back=document.createElement('div');
-    back.style.cssText='position:fixed;inset:0;background:rgba(10,7,5,.72);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:70;padding:18px';
-    back.innerHTML=`<div class="glass" style="max-width:460px;width:100%;padding:24px">
-      <h2 style="font-family:Unbounded,sans-serif;font-size:1.2rem;margin-bottom:6px">AI text key</h2>
-      <p style="color:var(--muted);font-size:.85rem;margin-bottom:14px">Images are free. Chat, captions, poems, memes and app building need a free key.</p>
-      <label>Provider</label>
-      <select id="cfgProv" style="width:100%;padding:12px;border-radius:12px;background:rgba(20,14,10,.6);color:var(--text);border:1px solid var(--border);font:inherit">
-        ${Object.entries(PRESETS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('')}
-      </select>
-      <label style="margin-top:14px">API key</label>
-      <input id="cfgKey" type="password" placeholder="paste key here" autocomplete="off"/>
-      <label style="margin-top:14px">Model</label>
-      <input id="cfgModel" type="text"/>
-      <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end">
-        <button class="btn alt" id="cfgClose">Close</button>
-        <button class="btn" id="cfgSave">Save</button>
-      </div></div>`;
-    document.body.append(btn,back);
-    const prov=back.querySelector('#cfgProv'), key=back.querySelector('#cfgKey'), model=back.querySelector('#cfgModel');
-    const fill=()=>{prov.value=CFG.provider;key.value=CFG.apiKey;model.value=CFG.model};
-    prov.onchange=()=>{const p=PRESETS[prov.value];model.value=p.model};
-    btn.onclick=()=>{fill();back.style.display='flex'};
-    back.querySelector('#cfgClose').onclick=()=>back.style.display='none';
-    back.onclick=e=>{if(e.target===back)back.style.display='none'};
-    back.querySelector('#cfgSave').onclick=()=>{
-      CFG.provider=prov.value; CFG.endpoint=PRESETS[prov.value].endpoint;
-      CFG.apiKey=key.value.trim(); CFG.model=model.value.trim()||PRESETS[prov.value].model;
-      saveCfg(); back.style.display='none';
-    };
-  })();
+  // Provider defaults are internal; no settings interface is shown.
 
   // ===== Text AI: streaming, retries, one shared helper =====
   function aiHeaders(){
